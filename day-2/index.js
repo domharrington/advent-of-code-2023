@@ -15,6 +15,7 @@ const max = {
   blue: 14,
 };
 
+// Part 1
 function process(game) {
   const [, contents] = game.split(': ');
   const rounds = contents.split('; ');
@@ -42,3 +43,40 @@ assert.deepEqual(process('Game 2: 1 blue, 2 green; 3 green, 4 blue, 1 red; 1 gre
 assert.deepEqual(process('Game 3: 8 green, 6 blue, 20 red; 5 blue, 4 red, 13 green; 5 green, 1 red'), false);
 assert.deepEqual(process('Game 4: 1 green, 3 red, 6 blue; 3 green, 6 red; 3 green, 15 blue, 14 red'), false);
 assert.deepEqual(process('Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green'), true);
+
+// Part 2
+function power(game) {
+  const maxPerGame = {
+    red: 0,
+    green: 0,
+    blue: 0,
+  };
+
+  const [, contents] = game.split(': ');
+  const rounds = contents.split('; ');
+  rounds.forEach(round => {
+    const counts = round.split(', ');
+    return counts.forEach(count => {
+      const [amount, colour] = count.split(' ')
+      if (+amount > maxPerGame[colour]) {
+        maxPerGame[colour] = +amount;
+      }
+    });
+  });
+
+  return maxPerGame.red * maxPerGame.green * maxPerGame.blue;
+}
+
+assert.deepEqual(power('Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green'), 48);
+assert.deepEqual(power('Game 2: 1 blue, 2 green; 3 green, 4 blue, 1 red; 1 green, 1 blue'), 12);
+assert.deepEqual(power('Game 3: 8 green, 6 blue, 20 red; 5 blue, 4 red, 13 green; 5 green, 1 red'), 1560);
+assert.deepEqual(power('Game 4: 1 green, 3 red, 6 blue; 3 green, 6 red; 3 green, 15 blue, 14 red'), 630);
+assert.deepEqual(power('Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green'), 36);
+
+const part2Result = lines.map(game => {
+  return power(game);
+})
+  .filter(Boolean)
+  .reduce((prev, next) => prev + next);
+
+console.log({ part2Result });
